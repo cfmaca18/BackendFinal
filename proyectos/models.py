@@ -140,7 +140,8 @@ class Perfil(models.Model):
 
     
 class Tipo_Revision(models.Model):
-    nombre      = models.CharField(max_length=200, unique = True)
+    nombre          = models.CharField(max_length=200, unique = True)
+    descripcion     = models.CharField(max_length=2000, )
 
     def __str__(self):
         return self.nombre
@@ -157,12 +158,18 @@ class Grupo (models.Model):
     def __str__(self):
         return self.nombre_grupo
 
+ESTADO_GRUPO = (
+    ('activo','activo'),
+    ('inactivo','inactivo'),
+    ('abandono_grupo_proyecto','abandono_grupo_proyecto'),
+)
 class Inscrito (models.Model):
-    estado        = models.CharField(max_length=30)
-    nombre_grupo               = models.ForeignKey(Grupo, null=True, blank=True, on_delete = models.PROTECT )
+    # estado del aprendiz respecto a la ficha
+    estado        = models.CharField(max_length=30,choices=ESTADO_GRUPO, default='activo')
+    nombre_grupo  = models.ForeignKey(Grupo, null=True, blank=True, on_delete = models.PROTECT )
     
-    perfil          = models.ForeignKey(Perfil, on_delete = models.PROTECT)
-    ficha           = models.ForeignKey(Ficha, on_delete = models.PROTECT)
+    perfil        = models.ForeignKey(Perfil, on_delete = models.PROTECT)
+    ficha         = models.ForeignKey(Ficha, on_delete = models.PROTECT)
     # proyecto        = models.IntegerField(null= True, blank= True) # consulta el id del Proyecto
     
     def __str__(self):
@@ -172,7 +179,7 @@ class Proyecto(models.Model):
     nombre_proyecto     = models.CharField(max_length=300 )    
     descripcion         = models.CharField(max_length=5000 )    
     foto                = models.ImageField(upload_to='proyectos/foto', null=True, blank=True)
-    aprendiz                = models.ForeignKey(Inscrito, on_delete=models.CASCADE)
+    aprendiz            = models.ForeignKey(Inscrito, on_delete=models.CASCADE)
     codigo_fuente       = models.URLField(null= True, blank= True,)    
     categorias          = models.ManyToManyField(Categoria, null=True, blank=True)
 
@@ -202,6 +209,8 @@ class Entrega (models.Model):
     creado                  = models.DateTimeField(auto_now_add = True)
     editado                 = models.DateTimeField(auto_now = True)
 
+    documento               = models.FileField(upload_to = 'entrega/documento',)
+    url                     = models.URLField(null= True, blank= True,)    
 
     def __str__(self):
         return self.calificacion + " " + str(self.creado) + " " + str(self.editado)

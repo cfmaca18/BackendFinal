@@ -17,8 +17,13 @@ class AgregarIntegrantesViewSet(viewsets.ModelViewSet):
         # Obtener el perfil_id del usuario logueado
         perfil_id = perfil_conectado(id_user)
 
+        inscrito = Inscrito.objects.get(perfil = perfil_id)
+        print ("xxxxxxxxx")
+        cod_ficha = inscrito.ficha.codigo
+        print (cod_ficha)
+        print ("xxxxxxxxx")
         # Obtener los inscritos que no son el usuario logueado y cumplen las condiciones
-        inscritos = Inscrito.objects.exclude(perfil_id=perfil_id).filter(estado='activo', nombre_grupo__isnull=True)
+        inscritos = Inscrito.objects.exclude(perfil_id=perfil_id).filter(estado='activo', nombre_grupo__isnull=True, ficha__codigo = cod_ficha )
 
         # Serializar los datos de los inscritos
         serializer = self.get_serializer(inscritos, many=True)

@@ -6,3 +6,4 @@ from proyectos.serializers.grupo import GrupoSerializer
 class GrupoViewSet(viewsets.ModelViewSet):
     queryset = Grupo.objects.all()
     serializer_class = GrupoSerializer
+    
